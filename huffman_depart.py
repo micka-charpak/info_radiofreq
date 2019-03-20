@@ -1,7 +1,6 @@
 class Arbre:
     def __init__(self, frequence, gauche, droit, table={}):
         """ Construit un Arbre
-e
             frequence: int
             gauche, droit: Arbre
         """
@@ -9,6 +8,7 @@ e
         self.gauche = gauche
         self.droit = droit
         self.table = table
+
     def affiche(self, prefixes = ['    ']):
         """ Affiche l'arbre """
         print(''.join(prefixes[:-1]) + '|___' + str(self.frequence))
@@ -28,8 +28,8 @@ e
         >>> H.arbre().table_de_codage()
         {'A': '0', 'C': '100', 'D': '101', 'B': '110', 'R': '111'}
         '''
-        #Je precise que Nour m'a donner l'idée de m'inspirer de affiche pour celle-ci ...
-        #j'etais vraiment perdu après 4 heures de reflexion vaine sur
+        #Je precise que Nour m'a donner l'idée de m'inspirer de affiche() pour celle-ci ...
+        #j'etais vraiment perdu après 4 heures de reflexion vaine sur la même fonction
         #du coup, on se retrouve avec la même fonction
         code += '0'
         self.gauche.table_de_codage(code)
@@ -38,26 +38,6 @@ e
         self.droit.table_de_codage(code)
 
         return self.table
-
-'''                              QUESTION 11 :
-
-L'arbre de Huffman génère une table efficace car elle atribue au symbole de haute fréquence les codes les plus cours
-(composés du moins de bit possible) et inversement les symboles les moins fréquents sont nécéssairement associés
-aux codes les plus longs puisqu'ils sont fusionnés au départ.
-
-'''
-
-
-
-
-
-
-
-
-
-
-
-
 
 class Feuille(Arbre):
     def __init__(self, frequence, symbole):
@@ -78,6 +58,7 @@ class Feuille(Arbre):
     def table_de_codage(self, code=''):
         '''
         permet de construire un dictionnaire qui associe à chaque symbole son code binaire
+        Ici en particulier, le dictionnaire est mis à jour.
         :param code: string
         '''
         self.table[self.symbole] = code
@@ -222,6 +203,9 @@ class Huffman:
             code += car
             if code in [valeur for valeur in dict.values()]:
                 texte_decode += [clef for clef in dict.keys() if dict[clef] == code][0]
+                # Cette comprehension de liste permet de trouver toutes les clefs correspondant
+                # au code, dans notre cas, il y a une bijection entre codes et clefs donc un seul élément
+                # dans cette liste
                 code = ''
         return texte_decode
 
@@ -239,8 +223,21 @@ if __name__ == "__main__":
               Feuille(10, 'a'))
     A.affiche()
     print(frequences('ABRACADABRA'))
+
+    '''                                      QUESTION 11 :
+
+    L'arbre de Huffman génère une table efficace car elle atribue au symbole de haute 
+    fréquence les codes les plus cours (composés du moins de bit possible) 
+    et inversement les symboles les moins fréquents sont nécéssairement associés
+    aux codes les plus longs puisqu'ils sont fusionnés au départ.
+    '''
+
+    #---------------------------------------QUESTION 12--------------------------------------------------
     print(encode_ascii('ABRACADABRA'))
     print(Huffman(frequences("ABRACADABRA")).compresse('ABRACADABRA'))
     print(len(encode_ascii('ABRACADABRA'))/len(Huffman(frequences("ABRACADABRA")).compresse('ABRACADABRA')))
-    #  QUESTION 12 !  : On trouve un facteur de compression de 3.83
+    #On trouve un facteur de compression de 3.83 ! Evidemment la compression est
+    #très efficace car notre Huffman a été initialisé avec le texte 'ABRACADABRA'
+    #que l'on voulait compresser
+
 
